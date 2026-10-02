@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ATL Tier List</title>
+    <style>
+      :root {
+        --bg: #07111d;
+        --bg2: #0d1c2c;
+        --panel: rgba(14, 24, 35, 0.92);
+        --panel-strong: rgba(9, 16, 23, 0.96);
+        --line: rgba(255, 255, 255, 0.08);
+        --text: #edf5ff;
+        --muted: #8ea3ba;
+        --accent: #7dd3fc;
+        --accent2: #38bdf8;
+        --orange: #f59e0b;
+        --red: #ef4444;
+        --green: #34d399;
+        --purple: #a78bfa;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 35%),
+          radial-gradient(circle at 80% 20%, rgba(167, 139, 250, .12), transparent 28%),
+          linear-gradient(180deg, #050b12 0%, #07111d 100%);
+        color: var(--text);
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        padding: 26px 18px 50px;
+      }
+
+      .page {
+        width: min(1320px, 100%);
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(12px);
+        background: rgba(7, 13, 20, 0.55);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .topbar-inner {
+        width: min(1320px, calc(100% - 24px));
+        margin: 0 auto;
+        height: 74px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        color: #091620;
+        background: linear-gradient(135deg, var(--accent), #dbeafe);
+        box-shadow: 0 0 20px rgba(125, 211, 252, 0.5);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .nav a {
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .nav a:hover { color: var(--text); }
+
+      .nav .btn {
+        margin-left: 10px;
+        padding: 11px 18px;
+        border-radius: 12px;
+        border: 1px solid rgba(125, 211, 252, 0.3);
+        background: rgba(125, 211, 252, 0.08);
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .content {
+        padding-top: 28px;
+      }
+
+      .hero {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 10px 8px 26px;
+      }
+
+      .hero-title {
+        font-size: clamp(2.2rem, 4vw, 4.2rem);
+        line-height: 0.96;
+        letter-spacing: -0.06em;
+        margin: 0;
+        font-weight: 900;
+      }
+
+      .hero-sub {
+        color: var(--muted);
+        max-width: 620px;
+        line-height: 1.6;
+        font-size: 1.02rem;
+      }
+
+      .stats {
+        display: flex;
+        gap: 18px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+      }
+
+      .stat {
+        min-width: 120px;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.02);
+        border-radius: 16px;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+      }
+      .stat span {
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 16px 12px 20px;
+      }
+
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .chip {
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.02);
+        color: var(--muted);
+        padding: 9px 14px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      .chip.active {
+        color: #07111d;
+        background: linear-gradient(135deg, var(--accent), #dbeafe);
+        border-color: transparent;
+        box-shadow: 0 0 20px rgba(125, 211, 252, 0.32);
+      }
+
+      .tb-actions {
+        display: flex;
+        gap: 12px;
+      }
+
+      .btn {
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.02);
+        color: var(--text);
+        padding: 11px 15px;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .btn.primary {
+        background: linear-gradient(135deg, var(--accent), #64d2ff);
+        color: #07111d;
+        border-color: transparent;
+        box-shadow: 0 10px 22px rgba(56, 189, 248, 0.28);
+      }
+
+      .board {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding-bottom: 18px;
+      }
+
+      .tier-row {
+        display: grid;
+        grid-template-columns: 110px minmax(0, 1fr);
+        min-height: 102px;
+        border: 1px solid var(--line);
+        background: rgba(10, 17, 24, 0.72);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.01);
+      }
+
+      .tier-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(1.2rem, 2vw, 2rem);
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        border-right: 1px solid var(--line);
+      }
+
+      .tier-s .tier-label { background: rgba(52, 211, 153, 0.12); color: #bcfcdc; }
+      .tier-a .tier-label { background: rgba(59, 130, 246, 0.12); color: #bfdbfe; }
+      .tier-b .tier-label { background: rgba(168, 85, 247, 0.12); color: #ddd6fe; }
+      .tier-c .tier-label { background: rgba(251, 191, 36, 0.12); color: #fde68a; }
+      .tier-d .tier-label { background: rgba(249, 115, 22, 0.12); color: #fed7aa; }
+      .tier-f .tier-label { background: rgba(239, 68, 68, 0.12); color: #fecaca; }
+
+      .slot {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        min-height: 100%;
+        flex-wrap: wrap;
+      }
+
+      .slot.drag-over {
+        outline: 2px dashed rgba(125, 211, 252, 0.7);
+        outline-offset: -6px;
+        background: rgba(125, 211, 252, 0.05);
+      }
+
+      .card {
+        width: 176px;
+        min-height: 74px;
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+        cursor: grab;
+        user-select: none;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(2,6,23,0.06));
+        box-shadow: 0 12px 20px rgba(2,6,23,0.2);
+      }
+
+      .card:active { cursor: grabbing; }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 10px 4px;
+      }
+
+      .avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 0.72rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--purple), var(--accent2));
+        color: #07111d;
+      }
+
+      .tag {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--muted);
+      }
+
+      .card-name {
+        padding: 0 10px 8px;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+      }
+
+      .card-meta {
+        padding: 0 10px 10px;
+        color: var(--muted);
+        font-size: 0.74rem;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.08) 40%, transparent 100%);
+        transform: translateX(-120%);
+      }
+
+      .card:hover::before {
+        animation: sheen 0.9s ease;
+      }
+
+      @keyframes sheen {
+        to { transform: translateX(120%); }
+      }
+
+      .card[data-tier="S"] { background: linear-gradient(180deg, rgba(52,211,153,0.2), rgba(17,24,39,0.2)); }
+      .card[data-tier="A"] { background: linear-gradient(180deg, rgba(59,130,246,0.2), rgba(17,24,39,0.2)); }
+      .card[data-tier="B"] { background: linear-gradient(180deg, rgba(168,85,247,0.2), rgba(17,24,39,0.2)); }
+      .card[data-tier="C"] { background: linear-gradient(180deg, rgba(251,191,36,0.2), rgba(17,24,39,0.2)); }
+      .card[data-tier="D"] { background: linear-gradient(180deg, rgba(249,115,22,0.2), rgba(17,24,39,0.2)); }
+      .card[data-tier="F"] { background: linear-gradient(180deg, rgba(239,68,68,0.2), rgba(17,24,39,0.2)); }
+
+      @media (max-width: 880px) {
+        .hero {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .toolbar { flex-direction: column; align-items: flex-start; }
+
+        .tier-row {
+          grid-template-columns: 1fr;
+        }
+
+        .tier-label {
+          min-height: 62px;
+          border-right: none;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .slot { min-height: 96px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div class="brand">
+            <span class="brand-mark">ATL</span>
+            <span>Tier List</span>
+          </div>
+
+          <nav class="nav" aria-label="Main">
+            <a href="#">League</a>
+            <a href="#">Players</a>
+            <a href="#">Teams</a>
+            <a href="#">Rankings</a>
+            <button class="btn">Submit</button>
+          </nav>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="hero">
+          <div>
+            <h1 class="hero-title">ATL<br />Tier List</h1>
+            <div class="stats">
+              <div class="stat">
+                <strong>1,247</strong>
+                <span>Voters</span>
+              </div>
+              <div class="stat">
+                <strong>18</strong>
+                <span>Players</span>
+              </div>
+              <div class="stat">
+                <strong>6</strong>
+                <span>Tiers</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="hero-sub">
+            A fan-made ranking of the current crop of ATL talent. Drag players between tiers to build your own version.
+          </p>
+        </section>
+
+        <div class="toolbar">
+          <div class="filters">
+            <button class="chip active">All</button>
+            <button class="chip">Rookies</button>
+            <button class="chip">Starters</button>
+            <button class="chip">Role Players</button>
+            <button class="chip">Bench</button>
+          </div>
+
+          <div class="tb-actions">
+            <button class="btn">Reset</button>
+            <button class="btn primary">Randomize</button>
+          </div>
+        </div>
+
+        <section class="board">
+          <div class="tier-row tier-s" data-tier="S">
+            <div class="tier-label">S</div>
+            <div class="slot" data-tier="S">
+              <div class="card" draggable="true" data-tier="S">
+                <div class="card-header">
+                  <div class="avatar">TY</div>
+                  <div class="tag">Guard</div>
+                </div>
+                <div class="card-name">Trae Young</div>
+                <div class="card-meta">Elite creator • 2x All-Star</div>
+              </div>
+
+              <div class="card" draggable="true" data-tier="S">
+                <div class="card-header">
+                  <div class="avatar">DH</div>
+                  <div class="tag">Wing</div>
+                </div>
+                <div class="card-name">De'Andre Hunter</div>
+                <div class="card-meta">Two-way impact • Combo wing</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tier-row tier-a" data-tier="A">
+            <div class="tier-label">A</div>
+            <div class="slot" data-tier="A">
+              <div class="card" draggable="true" data-tier="A">
+                <div class="card-header">
+                  <div class="avatar">BC</div>
+                  <div class="tag">Center</div>
+                </div>
+                <div class="card-name">Clint Capela</div>
+                <div class="card-meta">Glass king • Vertical threat</div>
+              </div>
+
+              <div class="card" draggable="true" data-tier="A">
+                <div class="card-header">
+                  <div class="avatar">BB</div>
+                  <div class="tag">Wing</div>
+                </div>
+                <div class="card-name">Bogdan Bogdanovic</div>
+                <div class="card-meta">Scoring punch • Off-ball threat</div>
+              </div>
+
+              <div class="card" draggable="true" data-tier="A">
+                <div class="card-header">
+                  <div class="avatar">JJ</div>
+                  <div class="tag">Forward</div>
+                </div>
+                <div class="card-name">Jalen Johnson</div>
+                <div class="card-meta">Playmaking spark • Modern forward</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tier-row tier-b" data-tier="B">
+            <div class="tier-label">B</div>
+            <div class="slot" data-tier="B">
+              <div class="card" draggable="true" data-tier="B">
+                <div class="card-header">
+                  <div class="avatar">VK</div>
+                  <div class="tag">Guard</div>
+                </div>
+                <div class="card-name">Vit Krejci</div>
+                <div class="card-meta">Secondary creator • Floor spacer</div>
+              </div>
+
+              <div class="card" draggable="true" data-tier="B">
+                <div class="card-header">
+                  <div class="avatar">DD</div>
+                  <div class="tag">Guard</div>
+                </div>
+                <div class="card-name">Dyson Daniels</div>
+                <div class="card-meta">Defensive energy • Transition scorer</div>
+              </div>
+
+              <div class="card" draggable="true" data-tier="B">
+                <div class="card-header">
+                  <div class="avatar">CJ</div>
+                  <div class="tag">Wing</div>
+                </div>
+                <div class="card-name">Chet Holmgren</div>
+                <div class="card-meta">Stretch big • Defensive ceiling</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tier-row tier-c" data-tier="C">
+            <div class="tier-label">C</div>
+            <div class="slot" data-tier="C">
+              <div class="card" draggable="true" data-tier="C">
+                <div class="card-header">
+                  <div class="avatar">JC</div>
+                  <div class="tag">Forward</div>
+                </div>
+                <div class="card-name">John Collins</div>
+                <div class="card-meta">High-ceiling scorer • Flashes upside</div>
+              </div>
+
+              <div class="card" draggable="true" data-tier="C">
+                <div class="card-header">
+                  <div class="avatar">DM</div>
+                  <div class="tag">Guard</div>
+                </div>
+                <div class="card-name">Derrick White</div>
+                <div class="card-meta">Playoff edge • Strong ball security</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tier-row tier-d" data-tier="D">
+            <div class="tier-label">D</div>
+            <div class="slot" data-tier="D">
+              <div class="card" draggable="true" data-tier="D">
+                <div class="card-header">
+                  <div class="avatar">TP</div>
+                  <div class="tag">Center</div>
+                </div>
+                <div class="card-name">Toumani Camara</div>
+                <div class="card-meta">Role piece • Needs polish</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tier-row tier-f" data-tier="F">
+            <div class="tier-label">F</div>
+            <div class="slot" data-tier="F">
+              <div class="card" draggable="true" data-tier="F">
+                <div class="card-header">
+                  <div class="avatar">LS</div>
+                  <div class="tag">Bench</div>
+                </div>
+                <div class="card-name">Luka Sam</div>
+                <div class="card-meta">Long-term project • Raw tools</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const cards = document.querySelectorAll('.card');
+      const slots = document.querySelectorAll('.slot');
+
+      cards.forEach(card => {
+        card.addEventListener('dragstart', () => {
+          card.classList.add('dragging');
+          setTimeout(() => card.style.opacity = '0.45', 0);
+        });
+
+        card.addEventListener('dragend', () => {
+          card.classList.remove('dragging');
+          card.style.opacity = '1';
+        });
+      });
+
+      slots.forEach(slot => {
+        slot.addEventListener('dragover', event => {
+          event.preventDefault();
+          slot.classList.add('drag-over');
+        });
+
+        slot.addEventListener('dragleave', () => {
+          slot.classList.remove('drag-over');
+        });
+
+        slot.addEventListener('drop', event => {
+          event.preventDefault();
+          slot.classList.remove('drag-over');
+
+          const dragged = document.querySelector('.dragging');
+          if (!dragged) return;
+
+          slot.appendChild(dragged);
+          dragged.dataset.tier = slot.dataset.tier;
+        });
+      });
+    </script>
+  </body>
+</html>
